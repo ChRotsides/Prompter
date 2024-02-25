@@ -59,3 +59,17 @@ Prompter is a command-line utility designed to enhance developers' productivity 
 
 ## Contributing
 Contributions to Prompter are welcome! Whether you're fixing bugs, adding new features, or improving documentation, your help is appreciated. Please feel free to submit pull requests or open issues on GitHub.
+
+# Example
+
+```bash
+prompter --prompt "Create A read me file for this util" --file-list *.cpp *.sh *.txt --prompt "make sure it is accurate and it is descriptive also think of some use cases"
+```
+
+### Breakdown of the Command
+1. **`--prompt "Create A read me file for this util"`**: This part of the command seems to indicate that you want to start the operation with an initial instruction or context, possibly to set the stage for the files being processed.
+
+2. **`--file-list *.cpp *.sh *.txt`**: This portion tells Prompter to process all files in the current directory with the extensions `.cpp`, `.sh`, and `.txt`. It will read these files and, based on the utility's functionality, extract function names, return statements, or other relevant information.
+
+3. **`--prompt "make sure it is accurate and it is descriptive also think of some use cases"`**: This additional prompt might be intended as a follow-up instruction or note, perhaps to guide the formatting or content of the output based on the initial files' analysis.
+
