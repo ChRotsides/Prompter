@@ -1,5 +1,3 @@
-Here's a README.md file tailored to your code, combining clarity, structure, and an emphasis on developer benefits:
-
 **README.md**
 
 **Prompter: A Code Analysis and Clipboard Utility**
