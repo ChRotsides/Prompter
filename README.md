@@ -1,85 +1,61 @@
-**README.md**
+# README.md for Prompter Utility
 
-**Prompter: A Code Analysis and Clipboard Utility**
+## Overview
+Prompter is a command-line utility designed to enhance developers' productivity by automating the extraction of function names and return statements from various programming language files. It also features cross-platform clipboard support to facilitate the easy sharing of code snippets and outputs between different environments.
 
-Prompter is a command-line tool that streamlines workflows for developers by providing:
+### Key Features
+- **Function Name Extraction**: Automatically identifies and lists function names from source code, supporting languages like Python, JavaScript, TypeScript, C++, and C.
+- **Return Statement Analysis**: Pinpoints return statements within functions, aiding in code comprehension and debugging.
+- **Clipboard Integration**: Allows copying of extracted information to the clipboard on both Windows and Linux platforms, streamlining the process of sharing and using code snippets.
 
-* **Function Name Extraction:** Quickly identify function names within source code files of various languages.
-* **Return Statement Analysis:** Pinpoint where functions return values, aiding in debugging and code comprehension.
-* **Cross-Platform Clipboard Management:** Seamlessly copy and manage text data between different file formats and operating systems.
+### Supported File Types
+- Python: `.py`
+- JavaScript: `.js`
+- TypeScript: `.ts`
+- C/C++: `.cpp`, `.c`
+- Header files: `.h`
 
-**Supported Languages**
+## Installation
 
-* Python (`.py`)
-* JavaScript (`.js`)
-* TypeScript (`.ts`)
-* C++ (`.cpp`, `.c`)
-* C Header Files (`.h`)
+### Prerequisites
+- A C++ compiler (g++-12 recommended)
+- CMake (version 3.10 or higher)
 
-**Installation**
-
-1. **Prerequisites:** 
-   * C++12 compiler (e.g., g++-12)
-2. **Clone Repository:**
+### Steps
+1. **Clone the repository** to your local machine.
    ```bash
-   git clone https://github.com/your_username/prompter.git
+   git clone https://github.com/ChRotsides/Prompter.git
    ```
-3. **Build and Install:**
+2. **Navigate to the project directory** and run the installation script.
    ```bash
-   cd prompter
+   cd Prompter
    ./install.sh
    ```
+   Use `sudo` if necessary to grant installation permissions.
 
-**Usage**
+## Usage
 
-* **Extract Function Names:**
-   ```bash
-   prompter --function-names-from-file <filename>
-   ```
-* **Read Text from File List:**
-   ```bash 
-   prompter --file-list <list_of_files>
-   ```
-* **Output to File:**
-   ```bash
-   prompter [options] > <output_file>
-   ``` 
-* **Copy to Clipboard (default if no output file):**
-    ```bash
-    prompter [options]
-    ```
-* **Prompt for Text Input:**
+### Basic Commands
+- **Extract Function Names**: Use the `--function-names-from-file` option followed by the file name.
   ```bash
-  prompter --prompt "Enter your text: "
+  prompter --function-names-from-file example.py
+  ```
+- **Process Multiple Files**: Utilize the `--file-list` option to process a list of files.
+  ```bash
+  prompter --file-list file1.cpp file2.js *.py
+  ```
+- **Copy to Clipboard**: By default, if no output file is specified, the output is copied to the clipboard. The output is also printed to the terminal.
+  ```bash
+  prompter --function-names-from-file example.py *.js
+  ```
+- **Output to File**: Use the `--output` option to specify an output file.
+  ```bash
+  prompter --function-names-from-file example.py --output results.txt
   ```
 
-**Complete Options:**
-```bash
-prompter -h (or --help)
-```
+### Advanced Options
+- **Help**: Display the help message with `-h` or `--help`.
+- **Version**: Output version information with `-V` or `--version`.
 
-**Example**
-
-```bash
-prompter --function-names-from-file example.cpp --prompt "Enter a search term: " > results.txt
-```
-
-**Contributing**
-
-We welcome contributions! Feel free to open issues or submit pull requests to help improve Prompter.
-
-**License**
-
-Prompter is released under the MIT License: [https://opensource.org/licenses/MIT](https://opensource.org/licenses/MIT).
-
-**Let Prompter Simplify Your Development Workflow – Try It Today!**
-
-**Explanation:**
-
-* **Concise Heading:** Highlights the tool's main purpose.
-* **Clear Benefit-Driven Summary:** Emphasizes the practical advantages Prompter offers developers.
-* **Structured Sections:** Guides users through supported languages, installation, usage, and contributing guidelines.
-* **Example:** Demonstrates how Prompter can be used effectively.
-* **Call to Action:** Encourages users to experiment with the tool. 
-
-Let me know if you'd like any additional sections or modifications! 
+## Contributing
+Contributions to Prompter are welcome! Whether you're fixing bugs, adding new features, or improving documentation, your help is appreciated. Please feel free to submit pull requests or open issues on GitHub.
