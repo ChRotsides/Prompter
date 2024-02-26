@@ -88,8 +88,12 @@ bool isReturnStatement(const std::string &line)
  * @param output_text A reference to a string where the output is accumulated.
  */
 void processFile(const std::string &fileName, std::string &output_text){
-
+    #ifdef _WIN32
+    std::string dir = fs::current_path().string();
+    #else
     std::string dir = fs::current_path();
+    #endif
+
     dir+="/"+fileName;
     std::ifstream file(dir);
     if (!file.is_open()){
@@ -130,7 +134,11 @@ bool processFileListArgument(int argc, char* argv[], int& currentIndex, std::str
             std::cout << next_arg << std::endl;
 
             // Open and read the file, appending its contents to output_text
+            #ifdef _WIN32
+            std::string dir = fs::current_path().string();
+            #else
             std::string dir = fs::current_path();
+            #endif
             dir+="/"+next_arg;
             
             std::ifstream file(dir);
@@ -283,7 +291,11 @@ int main(int argc, char *argv[])
                 return 1;
             }
         }else if (arg=="--dir"){
+            #ifdef _WIN32
+            std::string dir = fs::current_path().string();
+            #else
             std::string dir = fs::current_path();
+            #endif
             std::cout << dir << std::endl;
             return 0;
         }
@@ -299,7 +311,11 @@ int main(int argc, char *argv[])
         if (output_file != "")
         {
             std::ofstream file;
+            #ifdef _WIN32
+            std::string dir = fs::current_path().string();
+            #else
             std::string dir = fs::current_path();
+            #endif
             output_file = dir + "/" + output_file;
             file.open(output_file, std::ios::in);
             file << output_text;
