@@ -4,7 +4,8 @@
 #include <fstream>
 #include <regex>
 #include <string>
-
+#include <podofo/podofo.h>
+#include <cstring>
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -226,6 +227,72 @@ bool processPromptArgument(int argc, char *argv[], int &currentIndex, std::strin
     }
     return false; // Return false to indicate failure
 }
+
+/**
+ * Extracts text from a single PDF file specified by the file path and appends the extracted text to a given output string.
+ *
+ * @param pdfFilePath The path to the PDF file from which text is to be extracted.
+ * @param outputText A reference to a string where the extracted text from the PDF file will be appended.
+ */
+void ExtractTextFromPDF(const std::string& pdfFilePath, std::string& outputText) {
+    PoDoFo::PdfMemDocument pdfDocument;
+
+    // Attempt to load the PDF file
+    try {
+        std::cout << "Loading PDF file: " << pdfFilePath << std::endl;
+        pdfDocument.Load(pdfFilePath.c_str());
+    } catch (const PoDoFo::PdfError& e) {
+        std::cerr << "Error loading PDF file: " << e.what() << std::endl;
+        return; // Exit the function on error
+    }
+
+    for (int pageIndex = 0; pageIndex < pdfDocument.GetPageCount(); ++pageIndex) {
+        // Optional: Output progress information
+        // std::cout << "Extracting text from page " << pageIndex + 1 << " of " << pdfDocument.GetPageCount() << std::endl;
+        PoDoFo::PdfPage* page = pdfDocument.GetPage(pageIndex);
+        PoDoFo::PdfContentsTokenizer tokenizer(page);
+        PoDoFo::EPdfContentsType token;
+        const char* tokenValue;
+        PoDoFo::PdfVariant var;
+
+        while (tokenizer.ReadNext(token, tokenValue, var)) {
+            // Optional: Detailed token logging
+            // std::cout << "Token: " << token << ", Value: " << tokenValue << std::endl;
+            if (token == PoDoFo::ePdfContentsType_Keyword &&
+                (strcmp(tokenValue, "Tj") == 0 || strcmp(tokenValue, "'") == 0 || strcmp(tokenValue, "\"") == 0)) {
+                if (var.IsString() || var.IsHexString()) {
+                    PoDoFo::PdfString str = var.GetString();
+                    outputText += str.GetStringUtf8() + "\n";
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Extracts text from multiple PDF files specified in the input vector and appends the extracted text to the output string.
+ *
+ * @param pdfFilePaths A vector of strings, where each string is a path to a PDF file to be processed.
+ * @param outputText A reference to a string where the extracted text from all PDF files will be appended.
+ */
+void ExtractTextFromPDFs(const std::vector<std::string>& pdfFilePaths, std::string& outputText) {
+    for (const auto& filePath : pdfFilePaths) {
+        // Extract the file extension and convert it to lower case for case-insensitive comparison
+        std::string extension = filePath.substr(filePath.find_last_of(".") + 1);
+        std::transform(extension.begin(), extension.end(), extension.begin(),
+                       [](unsigned char c){ return std::tolower(c); });
+
+        // Check if the file extension is "pdf"
+        if (extension != "pdf") {
+            std::cerr << "Error: " << filePath << " is not a PDF file." << std::endl;
+            continue; // Skip non-PDF files
+        }
+
+        // Call the function to extract text from the current PDF file
+        ExtractTextFromPDF(filePath, outputText);
+    }
+}
+
 /**
  * The main function that processes command-line arguments and orchestrates file processing.
  * @param argc The number of command-line arguments.
@@ -237,7 +304,7 @@ int main(int argc, char *argv[])
     std::cout << "Number of command-line arguments: " << argc << std::endl;
     std::string output_text;
     std::string output_file;
-
+    std::vector<std::string> pdfFilePaths;
     // Define the help string
     std::string help_string = "Usage: ./prompter [OPTION]... [FILE]...\n"
                               "Options:\n"
@@ -273,6 +340,20 @@ int main(int argc, char *argv[])
             if (!processFileListArgument(argc, argv, i, output_text)) {
                 return 1; // If processing the file list argument fails, exit with an error code
             }
+        }else if (arg == "--read-pdf"){
+            // Collect PDF file paths following the --read-pdf argument
+            while (i + 1 < argc && argv[i + 1][0] != '-') {
+                pdfFilePaths.push_back(argv[++i]);
+            }
+
+            if (pdfFilePaths.empty()) {
+                std::cerr << "Error: --read-pdf requires at least one PDF file path" << std::endl;
+                return 1;
+            }
+
+            // Extract text from collected PDF files
+            ExtractTextFromPDFs(pdfFilePaths, output_text);
+
         }else if (arg == "--function-names-from-file"){
 
             if (i + 1 < argc){
